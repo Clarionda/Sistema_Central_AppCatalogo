@@ -1,0 +1,297 @@
+# 📦 Catálogo Virtual - Sistema de Gestión para Preventistas
+
+[![Python](https://img.shields.io/badge/Python-3.11%2B-blue)](https://python.org)
+[![PyQt6](https://img.shields.io/badge/PyQt6-6.7.0-brightgreen)](https://riverbankcomputing.com/software/pyqt/)
+[![Turso](https://img.shields.io/badge/Turso-LibSQL-orange)](https://turso.tech)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![Faculty](https://img.shields.io/badge/Proyecto-Facultad-purple)](https://github.com)
+
+> 🚀 Sistema de gestión de pedidos para distribuidoras, diseñado para que los preventistas puedan tomar pedidos, gestionar clientes y sincronizar datos en tiempo real con la nube.
+
+---
+
+## 📋 Índice
+
+- [📦 Catálogo Virtual - Sistema de Gestión para Preventistas](#-catálogo-virtual---sistema-de-gestión-para-preventistas)
+  - [📋 Índice](#-índice)
+  - [✨ Características](#-características)
+  - [🏗️ Arquitectura](#️-arquitectura)
+  - [📱 Pantallas](#-pantallas)
+  - [⚙️ Requisitos](#️-requisitos)
+  - [🚀 Instalación Rápida](#-instalación-rápida)
+  - [🔧 Configuración](#-configuración)
+    - [1. Crear el archivo `.env`](#1-crear-el-archivo-env)
+    - [2. Turso (Base de datos en la nube)](#2-turso-base-de-datos-en-la-nube)
+    - [3. GPS (opcional, solo Linux)](#3-gps-opcional-solo-linux)
+  - [👤 Usuarios de Prueba](#-usuarios-de-prueba)
+  - [🖥️ Uso](#️-uso)
+    - [Menú Principal](#menú-principal)
+    - [Mapa de Clientes](#mapa-de-clientes)
+    - [Catálogo de Productos](#catálogo-de-productos)
+    - [Carrito de Compras](#carrito-de-compras)
+    - [Nota de Venta](#nota-de-venta)
+  - [🔄 Sincronización](#-sincronización)
+  - [📂 Estructura del Proyecto](#-estructura-del-proyecto)
+  - [📸 Capturas de Pantalla](#-capturas-de-pantalla)
+    - [Splash Screen](#splash-screen)
+    - [Pantalla de Login](#pantalla-de-login)
+    - [Mapa de Clientes](#mapa-de-clientes-1)
+    - [Catálogo de Productos](#catálogo-de-productos-1)
+    - [Resumen de Compra](#resumen-de-compra)
+  - [🐛 Solución de Problemas](#-solución-de-problemas)
+  - [👥 Equipo](#-equipo)
+  - [📄 Licencia](#-licencia)
+
+---
+
+## ✨ Características
+
+| Funcionalidad | Descripción |
+|---------------|-------------|
+| 🎨 **Interfaz moderna** | Diseño con modo kiosco (pantalla completa) optimizado para tablets |
+| 🗺️ **Mapa interactivo** | Muestra clientes en un mapa con Leaflet y OpenStreetMap |
+| 📸 **Fotos de productos** | Las imágenes se cargan desde la carpeta `imagenes_productos/` |
+| 🛒 **Carrito en tiempo real** | Columna lateral que se actualiza al agregar productos |
+| 📋 **Notas de venta** | Numeración automática con formato `NOTA-YYYYMM-XXXX` |
+| 🔄 **Sincronización automática** | Conexión con Turso cada 3 segundos (subida y bajada) |
+| 📱 **Optimizado para tablets** | Diseño táctil con botones grandes y espaciosos |
+| 🛰️ **Geolocalización GPS** | Registra la ubicación del preventista (opcional) |
+| 🔐 **Autenticación segura** | Login con legajo y contraseña (hash SHA256) |
+| 📊 **Stock en tiempo real** | Descuento automático al generar notas de venta |
+| 📷 **Soporte de imágenes** | Fotos de productos desde carpeta local |
+
+---
+
+## 🏗️ Arquitectura
+
+```mermaid
+graph TB
+    A[App Catalogo<br/>Tablet/PC] -->|API HTTP| B[Turso<br/>Base de Datos Nube]
+    B -->|Sincronización| C[Sistema Central<br/>Mendoza]
+    
+    A --> D[SQLite Local<br/>catalogo.db]
+    D --> A
+    
+    C --> E[SQLite Central<br/>distribuidora.db]
+    E --> C
+    
+    style A fill:#4CAF50,stroke:#333,stroke-width:2px,color:#fff
+    style B fill:#FF9800,stroke:#333,stroke-width:2px,color:#fff
+    style C fill:#2196F3,stroke:#333,stroke-width:2px,color:#fff
+
+    📱 Pantallas
+Pantalla	Descripción
+Splash	Pantalla de bienvenida con barra de progreso y sincronización inicial
+Login	Autenticación con legajo y contraseña
+Mapa	Visualización de clientes asignados al preventista
+Catálogo	Productos con fotos, precios y botón para agregar al carrito
+Carrito	Columna lateral que muestra los productos agregados y el total
+Resumen de compra	Confirmación de la nota de venta antes de finalizar
+Nuevo Cliente	Formulario para agregar clientes desde la tablet
+⚙️ Requisitos
+Hardware
+
+    Tablet/PC: Resolución mínima 1280x800
+
+    Pantalla táctil: Recomendada (opcional)
+
+    GPS: Opcional
+
+    Almacenamiento: 500 MB libres
+
+    RAM: 2 GB recomendado
+
+Software
+
+    Python: 3.9 o superior
+
+    Sistema Operativo: Windows, Linux (Ubuntu/Debian) o macOS
+
+    Conexión a Internet: Para sincronización con Turso
+
+🚀 Instalación Rápida
+1. Clonar el repositorio
+bash
+
+git clone https://github.com/tu-usuario/app-catalogo.git
+cd app-catalogo
+
+2. Ejecutar el instalador
+bash
+
+chmod +x setup.sh
+./setup.sh
+
+3. Configurar el token de Turso
+bash
+
+nano .env
+
+Completar con los datos de Turso (el profesor proporcionará el token).
+4. Ejecutar la aplicación
+bash
+
+source venv/bin/activate  # Linux/Mac
+# o venv\Scripts\activate  # Windows
+
+python main.py
+
+🔧 Configuración
+1. Crear el archivo .env
+env
+
+DB_PATH=catalogo.db
+TURSO_URL=https://distribuidora-clarionda.aws-ap-northeast-1.turso.io/v2/pipeline
+TURSO_TOKEN=eyJhbGciOiJFZERTQSIs...
+SUBIDA_CADA_SEGUNDOS=3
+BAJADA_CADA_SEGUNDOS=3
+DEBUG=False
+
+2. Turso (Base de datos en la nube)
+
+La aplicación se conecta a Turso para sincronizar:
+
+    Clientes (con geolocalización)
+
+    Preventistas (con sus legajos)
+
+    Productos (catálogo, precios y stock)
+
+    Notas de venta (pedidos generados)
+
+3. GPS (opcional, solo Linux)
+bash
+
+sudo apt install python3-pyqt6.qtpositioning
+
+👤 Usuarios de Prueba
+Usuario (Legajo)	Contraseña	Rol	Clientes Asignados
+admin	admin	Administrador	Todos los clientes
+P001	1234	Preventista	82 clientes
+P002	1234	Preventista	90 clientes
+P003	1234	Preventista	85 clientes
+P004	1234	Preventista	94 clientes
+P005	1234	Preventista	92 clientes
+P006	1234	Preventista	90 clientes
+P007	1234	Preventista	92 clientes
+🖥️ Uso
+Menú Principal
+
+La aplicación se abre en modo kiosco (pantalla completa). Para salir, presionar Ctrl+Q.
+Mapa de Clientes
+
+    Los clientes aparecen como marcadores en el mapa
+
+    Cada marcador muestra el nombre del cliente
+
+    Al hacer clic en un marcador, se abre el catálogo de productos
+
+Catálogo de Productos
+
+    Buscar: Por código o descripción
+
+    Agregar: Seleccionar cantidad y presionar "Agregar"
+
+    Ver carrito: Columna lateral con los productos agregados
+
+    Total: Se actualiza automáticamente
+
+Carrito de Compras
+
+    Muestra productos agregados con cantidad y subtotal
+
+    Total general de la compra
+
+    Botón "Vaciar carrito" para eliminar todo
+
+    Botón "Finalizar Compra" para generar la nota de venta
+
+Nota de Venta
+
+    Número automático: NOTA-YYYYMM-XXXX
+
+    Incluye: preventista, cliente, productos, cantidades, precios y total
+
+    Se sube automáticamente a Turso
+
+🔄 Sincronización
+Dirección	Tablas	Frecuencia
+App → Turso	notas_venta, clientes, preventistas, categorias, posiciones_preventistas, visitas_clientes	3 segundos
+Turso → App	clientes, preventistas, categorias	3 segundos
+📂 Estructura del Proyecto
+text
+
+app-catalogo/
+├── main.py                    # Punto de entrada
+├── splash.py                  # Pantalla de bienvenida
+├── ventana_login.py           # Login
+├── ventana_principal.py       # Mapa y ventana principal
+├── ventana_catalogo.py        # Catálogo de productos
+├── ventana_resumen_compra.py  # Resumen de compra
+├── ventana_nuevo_cliente.py   # Agregar cliente
+├── auth.py                    # Autenticación
+├── database.py                # Conexión a SQLite
+├── sync.py                    # Sincronización con Turso
+├── pedidos.py                 # Carrito y notas de venta
+├── stock.py                   # Gestión de stock
+├── config.py                  # Configuración
+├── ubicacion.py               # GPS y visitas
+├── geocoding.py               # Geocodificación de direcciones
+├── script_creacion.sql        # Estructura de base de datos
+├── requirements.txt           # Dependencias
+├── .env                       # Variables de entorno (no subir)
+├── .env.example               # Ejemplo de .env
+├── .gitignore                 # Archivos ignorados por Git
+├── setup.sh                   # Script de instalación
+├── README.md                  # Documentación
+├── imagenes_productos/        # Fotos de productos (ejemplos)
+│   ├── P001.jpg
+│   ├── P002.jpg
+│   └── ...
+├── catalogo.db                # Base de datos local (SQLite)
+└── dist/                      # Ejecutables generados (PyInstaller)
+
+📸 Capturas de Pantalla
+Splash Screen
+
+Pantalla de bienvenida con barra de progreso
+Pantalla de Login
+
+Login con legajo y contraseña, botón para mostrar/ocultar contraseña
+Mapa de Clientes
+
+Mapa interactivo con marcadores de clientes
+Catálogo de Productos
+
+Catálogo con fotos, precios y carrito lateral
+Resumen de Compra
+
+Resumen con cliente, preventista, productos y total
+🐛 Solución de Problemas
+Error: No module named 'PyQt6'
+bash
+
+pip install PyQt6 PyQt6-WebEngine
+
+Error: Usuario o contraseña incorrectos
+
+Actualizar la contraseña en la base local:
+bash
+
+sqlite3 catalogo.db "UPDATE usuarios SET password_hash = '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4' WHERE username = 'P001';"
+
+Error: GPS desactivado
+
+Instalar el paquete de GPS en Linux:
+bash
+
+sudo apt install python3-pyqt6.qtpositioning
+
+👥 Equipo
+
+Proyecto desarrollado por el equipo de Código Crítico - Tercer Semestre 2026
+📄 Licencia
+
+Este proyecto es de uso interno de la distribuidora. Todos los derechos reservados.
+🧉 ¡Gracias por usar Catálogo Virtual!
+

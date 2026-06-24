@@ -1,0 +1,58 @@
+# ============================================================
+# REQUIREMENTS - APP CATALOGO
+# Sistema de Gestión para Preventistas
+# ============================================================
+
+# ============================================================
+# FRAMEWORK PRINCIPAL
+# ============================================================
+PyQt6==6.7.0
+PyQt6-WebEngine==6.7.0
+
+# ============================================================
+# SINCRONIZACIÓN CON TURSO
+# ============================================================
+httpx==0.27.2
+requests==2.32.3
+
+# ============================================================
+# VARIABLES DE ENTORNO
+# ============================================================
+python-dotenv==1.0.1
+
+# ============================================================
+# PROCESAMIENTO DE IMÁGENES
+# ============================================================
+Pillow==10.4.0
+
+# ============================================================
+# UTILIDADES
+# ============================================================
+uuid
+sqlite3
+threading
+time
+datetime
+hashlib
+json
+
+# ============================================================
+# NOTAS IMPORTANTES
+# ============================================================
+# 1. PyQt6-Positioning (GPS) se instala a nivel de sistema:
+#    Linux: sudo apt install python3-pyqt6.qtpositioning
+#    Windows/Mac: ya viene con PyQt6 completo
+# 2. Los módulos 'uuid', 'sqlite3', 'threading', 'time',
+#    'datetime', 'hashlib', 'json' son de la librería estándar,
+#    no necesitan instalación.
+# ============================================================
+
+# ============================================================
+# VERSIÓN COMPLETA (opcional, con todas las versiones fijas)
+# ============================================================
+# PyQt6==6.7.0
+# PyQt6-WebEngine==6.7.0
+# httpx==0.27.2
+# requests==2.32.3
+# python-dotenv==1.0.1
+# Pillow==10.4.0
